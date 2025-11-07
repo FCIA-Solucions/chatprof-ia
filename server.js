@@ -26,12 +26,19 @@ app.post("/chat", async (req, res) => {
         }),
       }
     );
+
     const data = await response.json();
+
+    // ✅ Mostra tudo que o Gemini respondeu (ou o erro) no console do Render
+    console.log("🌐 Resposta completa do Gemini:", JSON.stringify(data, null, 2));
+
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "🤖 Não consegui responder agora.";
+      "🤖 O Gemini não enviou texto. Veja o log no Render para detalhes.";
+
     res.json({ reply });
   } catch (error) {
+    console.error("⚠️ Erro ao chamar o Gemini:", error);
     res.status(500).json({ error: error.message });
   }
 });
