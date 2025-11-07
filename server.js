@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
@@ -8,8 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ Atualizado para o modelo correto
 const API_KEY = process.env.API_KEY;
-const MODEL = "gemini-1.5-flash-latest";
+const MODEL = "gemini-1.5-flash"; // ou "gemini-1.5-pro"
 
 app.post("/chat", async (req, res) => {
   const { text } = req.body;
@@ -29,7 +31,6 @@ app.post("/chat", async (req, res) => {
 
     const data = await response.json();
 
-    // ✅ Mostra tudo que o Gemini respondeu (ou o erro) no console do Render
     console.log("🌐 Resposta completa do Gemini:", JSON.stringify(data, null, 2));
 
     const reply =
@@ -45,3 +46,5 @@ app.post("/chat", async (req, res) => {
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ chatProf IA ativo na porta ${PORT}`));
+
+
