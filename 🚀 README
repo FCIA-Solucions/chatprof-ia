@@ -1,0 +1,19 @@
+🚀 chatProf IA — Backend Gemini (Render.com)
+
+1️⃣ Crie uma conta gratuita em https://render.com
+2️⃣ Clique em “New +” → “Web Service”
+3️⃣ Escolha “Upload Folder” e envie esta pasta (chatProf-IA)
+4️⃣ Configurações:
+   - Environment: Node
+   - Build Command: npm install
+   - Start Command: npm start
+   - Port: 10000
+5️⃣ Clique em “Create Web Service”
+6️⃣ Em “Environment Variables”, adicione:
+   - API_KEY = (sua chave do Gemini)
+7️⃣ Após o deploy, copie o link público:
+   ex: https://chatprof-ia.onrender.com
+8️⃣ No seu site, substitua:
+   const cloudUrl = 'https://chatprof-ia.onrender.com/chat';
+   const demoMode = false;
+9️⃣ Pronto! O chatProf IA estará ativo com Gemini 1.5 Flash.
