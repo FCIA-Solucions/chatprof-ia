@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
@@ -9,33 +8,39 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Atualizado para o modelo correto
 const API_KEY = process.env.API_KEY;
-const MODEL = "gemini-1.5-flash"; // ou "gemini-1.5-pro"
+// pode usar "gemini-1.5-flash" ou "gemini-1.5-pro"
+const MODEL = "gemini-1.5-flash";
+
+// 👈 trocamos v1beta → v1
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/${MODEL}:generateContent?key=${API_KEY}`;
 
 app.post("/chat", async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: "Mensagem vazia." });
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text }] }],
-        }),
-      }
-    );
+    const response = await fetch(GEMINI_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text }]
+          }
+        ]
+      })
+    });
 
     const data = await response.json();
 
-    console.log("🌐 Resposta completa do Gemini:", JSON.stringify(data, null, 2));
+    // log de diagnóstico (ótimo pra qualquer erro futuro)
+    console.log("🌐 Resposta Gemini:", JSON.stringify(data, null, 2));
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "🤖 O Gemini não enviou texto. Veja o log no Render para detalhes.";
+      "🤖 O Gemini não enviou texto. Veja os logs no Render para detalhes.";
 
     res.json({ reply });
   } catch (error) {
@@ -46,5 +51,3 @@ app.post("/chat", async (req, res) => {
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ chatProf IA ativo na porta ${PORT}`));
-
-
