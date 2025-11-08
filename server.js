@@ -9,10 +9,11 @@ app.use(cors());
 app.use(express.json());
 
 const API_KEY = process.env.API_KEY;
-// pode usar "gemini-1.5-flash" ou "gemini-1.5-pro"
-const MODEL = "gemini-1.5-flash";
+// ✅ CORRIGIDO: gemini-2.5-flash (modelo atual compatível com v1)
+// Alternativas: gemini-2.5-pro, gemini-2.0-flash, gemini-2.0-flash-lite
+const MODEL = "gemini-2.5-flash";
 
-// 👈 trocamos v1beta → v1
+// ✅ URL correta para v1 (compatível com generateContent)
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/${MODEL}:generateContent?key=${API_KEY}`;
 
 app.post("/chat", async (req, res) => {
@@ -35,8 +36,16 @@ app.post("/chat", async (req, res) => {
 
     const data = await response.json();
 
-    // log de diagnóstico (ótimo pra qualquer erro futuro)
+    // ✅ Log de diagnóstico melhorado
     console.log("🌐 Resposta Gemini:", JSON.stringify(data, null, 2));
+
+    // ✅ Tratamento de erro melhorado
+    if (!response.ok) {
+      console.error("❌ Erro da API:", data.error);
+      return res.status(response.status).json({ 
+        error: data.error?.message || "Erro ao chamar o Gemini" 
+      });
+    }
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
